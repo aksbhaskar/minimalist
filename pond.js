@@ -7,6 +7,7 @@
 
   var CW = 3, CH = 5, FONT_PX = 7.2, FAMILY = "px Newsreader, Georgia, serif";
   var SIM = 4, NS = 16, STEP = 1 / 60;
+  var SCALE = 0.63; // the scene is laid out in world units and drawn at this size, so the pond reads larger than the canvas
   var KOI_RAMP = [":", "+", "*", "o", "O", "8", "%", "#", "@"];
   var STONE_RAMP = [".", ":", "-", "+", "o", "O"];
   var RIPPLE_LIT = ["-", "~", "~", "="];
@@ -25,7 +26,6 @@
       pad: "#86b176", padRim: "#4c8645", padVein: "#5f9853", lotus: "#de7596", lotusTip: "#efb0c3", lotusCore: "#e0a92a", lotusDeep: "#c95a7e",
       stones: [["#787268", "#a29c91", "#c3bdb2"], ["#857563", "#ab9a84", "#c9b9a3"], ["#6f767c", "#979ea4", "#b8bec3"]], moss: "#7c9c63",
       under: "#7f9f7c", bubble: "#5f8ea5", fly: "#2f7f8f", flyWing: "#9db5c2",
-      grass: "#679a52", grassHi: "#8fbb6e", grassLo: "#4b7c3f", blooms: ["#e2b93b", "#b98fd1", "#e8869f"],
       food: "#b4844a", petal: "#e9a3b8", weed: "#79a95a"
     },
     dark: {
@@ -38,16 +38,15 @@
       pad: "#4d7f45", padRim: "#79b06b", padVein: "#66a05b", lotus: "#e88aa8", lotusTip: "#f7c6d6", lotusCore: "#f1c54f", lotusDeep: "#c96d8c",
       stones: [["#4f4c47", "#6e6a62", "#918c83"], ["#57493c", "#7a6956", "#9c8a74"], ["#454b50", "#626a70", "#858d93"]], moss: "#5d7d4e",
       under: "#557a55", bubble: "#9cc8db", fly: "#62c3d2", flyWing: "#c6d9e3",
-      grass: "#5c8f4d", grassHi: "#84b56b", grassLo: "#446d39", blooms: ["#f0c94f", "#c6a0de", "#f094ab"],
       food: "#d0a264", petal: "#f2b6c8", weed: "#68a050"
     }
   };
 
-  var W = 0, H = 0, cols = 0, rows = 0, dpr = 1;
+  var W = 0, H = 0, cols = 0, rows = 0, dpr = 1, PX = 1;
   var chars = [], keys = [], GX, GY, cellDist, cellSim, cellX, cellY, pebbles = [];
   var sc = 0, sr = 0, cur, prev, mask;
   var pond = { cx: 0, cy: 0, rx: 1, ry: 1 };
-  var stones = [], tufts = [], blooms = [], pads = [], weeds = [], petals = [], koi = [], food = [], strands = [], bubbles = [];
+  var stones = [], pads = [], weeds = [], petals = [], koi = [], food = [], strands = [], bubbles = [];
   var fly = { on: false, wait: 4, x: 0, y: 0, a: 0, tx: 0, ty: 0, hover: 0, legs: 0 };
   var time = 0, last = 0, acc = 0, running = false, visible = false, nextDrip = 2;
   var pointer = { x: 0, y: 0, inside: false, wx: -99, wy: -99 };
@@ -77,10 +76,10 @@
 
   var atlas = document.createElement("canvas"), actx = atlas.getContext("2d"), slots = {}, slotCount = 0, PW = 0, PH = 0, perRow = 0, capacity = 0;
   function resetAtlas() {
-    PW = Math.ceil(CW * dpr * 2.2); PH = Math.ceil(CH * dpr * 1.6);
+    PW = Math.ceil(CW * PX * 2.2); PH = Math.ceil(CH * PX * 1.6);
     atlas.width = 1024; atlas.height = 1024;
     perRow = Math.floor(1024 / PW); capacity = perRow * Math.floor(1024 / PH);
-    actx.font = (FONT_PX * dpr) + FAMILY; actx.textAlign = "center"; actx.textBaseline = "middle";
+    actx.font = (FONT_PX * PX) + FAMILY; actx.textAlign = "center"; actx.textBaseline = "middle";
     slots = {}; slotCount = 0;
   }
   function slotFor(ch, key) {
@@ -92,7 +91,7 @@
     actx.save();
     actx.beginPath(); actx.rect(s.x, s.y, PW, PH); actx.clip();
     actx.globalAlpha = +key.slice(bar + 1); actx.fillStyle = key.slice(0, bar);
-    actx.fillText(ch, s.x + PW / 2, s.y + PH / 2 + 0.4 * dpr);
+    actx.fillText(ch, s.x + PW / 2, s.y + PH / 2 + 0.4 * PX);
     actx.restore();
     slots[id] = s;
     return s;
@@ -156,8 +155,9 @@
   function layout() {
     var rect = cv.getBoundingClientRect();
     if (!rect.width) return;
-    W = rect.width; H = rect.height; dpr = Math.min(window.devicePixelRatio || 1, 2);
-    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    dpr = Math.min(window.devicePixelRatio || 1, 3); PX = dpr * SCALE;
+    W = rect.width / SCALE; H = rect.height / SCALE;
+    cv.width = Math.round(rect.width * dpr); cv.height = Math.round(rect.height * dpr);
     resetAtlas();
     cols = Math.ceil(W / CW); rows = Math.ceil(H / CH);
     pond.cx = W / 2; pond.cy = H / 2; pond.rx = W / 2 - 26; pond.ry = H / 2 - 22;
@@ -174,10 +174,10 @@
       var cx = (i % cols) * CW + CW / 2, cy = ((i / cols) | 0) * CH + CH / 2;
       cellDist[i] = pondDist(cx, cy);
       cellSim[i] = simIndex(cx, cy);
-      cellX[i] = Math.round(cx * dpr - PW / 2); cellY[i] = Math.round(cy * dpr - PH / 2);
+      cellX[i] = Math.round(cx * PX - PW / 2); cellY[i] = Math.round(cy * PX - PH / 2);
     }
     var r = rng(7);
-    buildStones(r); buildTufts(r); buildPebbles(r); buildPads(r); buildFloaters(r); buildStrands(r);
+    buildStones(r); buildPebbles(r); buildPads(r); buildFloaters(r); buildStrands(r);
     if (!koi.length) spawnKoi();
     else koi.forEach(function (f) { pullInside(f, 30); resetTrail(f); });
   }
@@ -197,23 +197,6 @@
     stones.sort(function (p, q) { return p.y - q.y; });
   }
 
-  function buildTufts(r) {
-    tufts = []; blooms = [];
-    var s = clamp(W / 560, 0.7, 1);
-    [[0.03, 0.1], [0.97, 0.1], [0.025, 0.9], [0.975, 0.9], [0.2, 0.04], [0.82, 0.96]].forEach(function (p) {
-      var t = { x: p[0] * W, y: p[1] * H, blades: [] }, out = Math.atan2(t.y - pond.cy, t.x - pond.cx);
-      var count = 14 + (r() * 8 | 0);
-      for (var k = 0; k < count; k++) {
-        t.blades.push({ a: out + (r() - 0.5) * 3.8, len: (9 + r() * 17) * s, curve: (r() - 0.5) * 1.2, p: r() * 6.28 });
-      }
-      tufts.push(t);
-      for (var b = 0; b < 3; b++) {
-        var ba = out + (r() - 0.5) * 2.4, bd = (10 + r() * 14) * s;
-        blooms.push({ x: t.x + Math.cos(ba) * bd, y: t.y + Math.sin(ba) * bd, c: (r() * 3) | 0 });
-      }
-    });
-  }
-
   function buildPebbles(r) {
     pebbles = new Array(cols * rows);
     for (var i = 0; i < pebbles.length; i++) {
@@ -226,8 +209,9 @@
 
   function buildPads(r) {
     pads = [];
-    var base = Math.min(W, H * 1.9) * 0.064;
-    [[0.24, 0.3, 1, true], [0.76, 0.7, 0.9, true], [0.85, 0.32, 0.58, false], [0.14, 0.66, 0.62, false], [0.6, 0.18, 0.45, false]]
+    var base = Math.min(34, Math.min(W, H * 1.9) * 0.064);
+    [[0.24, 0.3, 1, true], [0.76, 0.7, 0.9, true], [0.85, 0.32, 0.58, false], [0.14, 0.66, 0.62, false], [0.6, 0.18, 0.45, false],
+     [0.42, 0.8, 0.5, false], [0.9, 0.56, 0.4, false]]
       .forEach(function (s) {
         var p = { x: s[0] * W, y: s[1] * H, r: base * s[2], rot: r() * 6.28, flower: s[3], seed: r() * 100 };
         p.px = p.x; p.py = p.y;
@@ -243,7 +227,7 @@
         weeds.push({ x: p.x + (r() - 0.5) * 70, y: p.y + (r() - 0.5) * 40, vx: 0, vy: 0, ch: r() < 0.5 ? "o" : r() < 0.5 ? "." : "," });
       }
     });
-    for (var k = 0; k < 8; k++) {
+    for (var k = 0; k < 11; k++) {
       var q = randomInPond(r, 20);
       petals.push({ x: q.x, y: q.y, vx: 0, vy: 0, rot: r() * 6.28, spin: (r() - 0.5) * 1.2 });
     }
@@ -252,7 +236,7 @@
 
   function buildStrands(r) {
     strands = [];
-    for (var k = 0; k < 16; k++) {
+    for (var k = 0; k < 22; k++) {
       var a = r() * Math.PI * 2, b = edge(a), inset = 0.86 - r() * 0.06;
       var x = pond.cx + Math.cos(a) * pond.rx * b * inset, y = pond.cy + Math.sin(a) * pond.ry * b * inset;
       strands.push({ x: x, y: y, a: Math.atan2(pond.cy - y, pond.cx - x) + (r() - 0.5) * 0.9, len: 16 + r() * 24, p: r() * 6.28 });
@@ -286,7 +270,7 @@
 
   function spawnKoi() {
     koi = [];
-    var r = rng(42), count = W < 420 ? 3 : 4, s = clamp(W / 600, 0.7, 1.12);
+    var r = rng(42), count = 4, s = clamp(W / 700, 0.75, 1);
     for (var k = 0; k < count; k++) {
       var th = (k + r() * 0.6) / count * Math.PI * 2, rad = 0.35 + r() * 0.3;
       var p = { x: pond.cx + Math.cos(th) * pond.rx * rad, y: pond.cy + Math.sin(th) * pond.ry * rad };
@@ -714,19 +698,6 @@
     });
   }
 
-  function drawTuft(t, P) {
-    t.blades.forEach(function (b) {
-      var a = b.a + Math.sin(time * 1.1 + b.p) * 0.07, x = t.x, y = t.y;
-      for (var s = 0; s < b.len; s += 1.7) {
-        a += b.curve * 1.7 / b.len;
-        x += Math.cos(a) * 1.7; y += Math.sin(a) * 1.7;
-        var i = cellAt(x, y);
-        if (i >= 0) set(i, dirChar(Math.cos(a), Math.sin(a)), s > b.len * 0.65 ? P.grassHi : s < b.len * 0.3 ? P.grassLo : P.grass, 1);
-      }
-    });
-    blob(t.x, t.y, 2.5, function (i) { set(i, "#", P.grassLo, 1); });
-  }
-
   function drawFly(P) {
     var hx = Math.cos(fly.a), hy = Math.sin(fly.a), nx = -hy, ny = hx, flap = Math.sin(time * 55) > 0 ? 0.35 : -0.15;
     for (var k = 0; k < 9; k++) {
@@ -767,10 +738,6 @@
     });
     pads.forEach(function (p) { drawPad(p, P); });
     stones.forEach(function (s) { drawStone(s, P); });
-    tufts.forEach(function (t) { drawTuft(t, P); });
-    blooms.forEach(function (b) {
-      blob(b.x, b.y, 3, function (i, k) { set(i, k < 0.4 ? "o" : "*", k < 0.4 ? P.blooms[0] : P.blooms[b.c], 1); });
-    });
     if (fly.on) drawFly(P);
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -805,7 +772,7 @@
     requestAnimationFrame(frame);
   }
   function stop() { running = false; }
-  function local(e) { var r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+  function local(e) { var r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / SCALE, y: (e.clientY - r.top) / SCALE }; }
 
   cv.addEventListener("pointerdown", function (e) { var p = local(e); feed(p.x, p.y); });
   cv.addEventListener("pointermove", function (e) {

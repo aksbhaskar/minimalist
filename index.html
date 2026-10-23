@@ -32,8 +32,8 @@
   .gh { display: grid; grid-template-rows: repeat(7, 1fr); grid-auto-flow: column; gap: 2px; }
   .gh-count { margin-top: 8px; }
   .pond-wrap { margin-bottom: 44px; }
-  #pond { display: block; position: relative; left: 50%; transform: translateX(-50%); width: min(820px, calc(100vw - 32px)); height: 430px; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-tap-highlight-color: transparent; }
-  @media (max-width: 520px) { #pond { height: 340px; } }
+  #pond { display: block; width: 100%; height: 330px; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-tap-highlight-color: transparent; }
+  @media (max-width: 520px) { #pond { height: 270px; } }
   .pond-hint { color: var(--muted); font-size: 15px; margin-top: 6px; }
   .gh i { display: block; aspect-ratio: 1; border-radius: 1px; background: color-mix(in srgb, var(--ink) 7%, var(--bg)); }
   .gh i.pad { visibility: hidden; }
@@ -54,7 +54,7 @@
 
   <section class="pond-wrap">
     <canvas id="pond" role="img" aria-label="An ASCII koi pond. Tap to feed the koi."></canvas>
-    <p class="pond-hint">Tap to feed the koi.</p>
+    <p class="pond-hint">tap to feed the koi.</p>
   </section>
 
   <section>
