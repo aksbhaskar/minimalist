@@ -135,7 +135,7 @@
         if (!days.length) throw 0;
         var total = data.total && data.total.lastYear != null ? data.total.lastYear
           : days.reduce(function (n, d) { return n + d.count; }, 0);
-        count.textContent = total.toLocaleString("en-US") + " contributions in the last year";
+        count.textContent = "contributions in the last year: " + total.toLocaleString("en-US");
         var pad = new Date(days[0].date + "T00:00:00").getDay();
         grid.style.gridTemplateColumns = "repeat(" + Math.ceil((days.length + pad) / 7) + ", 1fr)";
         var html = "";
