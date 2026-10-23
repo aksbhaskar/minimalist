@@ -29,9 +29,11 @@
   p { margin: 0; }
   a { color: inherit; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; text-decoration-thickness: 1px; }
   a:hover { text-decoration-color: var(--ink); }
-  .exp + .exp { margin-top: 10px; }
+  .exp + .exp { margin-top: 14px; }
+  .row { display: flex; justify-content: space-between; gap: 16px; }
+  .t { color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
   .d { color: var(--muted); }
-  .t { white-space: nowrap; }
+  @media (max-width: 520px) { .row { flex-direction: column; gap: 0; } .t { order: 2; } .d { margin-top: 0; } }
   .theme { position: absolute; top: 20px; right: 20px; background: none; border: 0; padding: 0; font: inherit; font-size: 15px; color: var(--muted); cursor: pointer; }
   .theme:hover { color: var(--ink); }
 </style>
@@ -64,20 +66,34 @@
 
   <section>
     <h2>Experience</h2>
-    <p class="exp">Number Theory Research @ ISI Delhi <span class="t">(Apr – Jul 2026)</span><br>
-      <span class="d">Original research under Prof. Shanta Laishram, Head of the Stat-Math Unit.</span></p>
-    <p class="exp">Teaching Assistant @ Ashoka University <span class="t">(Apr – Jun 2026)</span><br>
-      <span class="d">TA’d undergraduate courses in group theory, mechanics, geometry and investing, before starting college myself.</span></p>
-    <p class="exp">Junior Researcher @ <a href="https://www.nyas.org/">New York Academy of Sciences</a> <span class="t">(Aug 2025 – Jul 2026)</span><br>
-      <span class="d">International research teams, mentored by a postdoc at Columbia’s Motor Neuron Center; later, human-centred AI.</span></p>
-    <p class="exp">Policy Intern @ Ministry of Education <span class="t">(Jun 2025)</span><br>
-      <span class="d">Policy analysis on the Samagra Shiksha scheme.</span></p>
-    <p class="exp">Research Scholar @ <a href="https://www.lodhageniusprogramme.com/">Lodha Genius Programme</a> <span class="t">(May 2025 – Apr 2026)</span><br>
-      <span class="d">Pure mathematics. Kept on for the year-long research track.</span></p>
-    <p class="exp">CFO @ TaxCity <span class="t">(Jun 2024 – Jan 2026)</span><br>
-      <span class="d">Raised $120K+ in grants for a financial literacy game that reached 79,000+ students in 27 countries.</span></p>
-    <p class="exp">Creator @ FinKid <span class="t">(May 2023 – Present)</span><br>
-      <span class="d">Financial literacy app, backed by a $25K Y Combinator compute grant.</span></p>
+    <div class="exp">
+      <p class="row"><span>ISI Delhi</span><span class="t">Apr – Jul 2026</span></p>
+      <p class="d">Number Theory Researcher, under Prof. Shanta Laishram</p>
+    </div>
+    <div class="exp">
+      <p class="row"><span>Ashoka University</span><span class="t">Apr – Jun 2026</span></p>
+      <p class="d">Teaching Assistant, undergraduate mathematics</p>
+    </div>
+    <div class="exp">
+      <p class="row"><span><a href="https://www.nyas.org/">New York Academy of Sciences</a></span><span class="t">Aug 2025 – Jul 2026</span></p>
+      <p class="d">Junior Researcher, mentored at Columbia’s Motor Neuron Center</p>
+    </div>
+    <div class="exp">
+      <p class="row"><span>Ministry of Education</span><span class="t">Jun 2025</span></p>
+      <p class="d">Policy Intern, Samagra Shiksha scheme</p>
+    </div>
+    <div class="exp">
+      <p class="row"><span><a href="https://www.lodhageniusprogramme.com/">Lodha Genius Programme</a></span><span class="t">May 2025 – Apr 2026</span></p>
+      <p class="d">Research Scholar, pure mathematics</p>
+    </div>
+    <div class="exp">
+      <p class="row"><span>TaxCity</span><span class="t">Jun 2024 – Jan 2026</span></p>
+      <p class="d">CFO, $120K+ raised, 79,000+ students reached</p>
+    </div>
+    <div class="exp">
+      <p class="row"><span>FinKid</span><span class="t">May 2023 – Present</span></p>
+      <p class="d">Creator, financial literacy app backed by Y Combinator</p>
+    </div>
   </section>
 
   <section>
