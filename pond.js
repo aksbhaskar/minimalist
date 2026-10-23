@@ -286,7 +286,7 @@
 
   function spawnKoi() {
     koi = [];
-    var r = rng(42), count = W < 420 ? 4 : 6, s = clamp(W / 560, 0.7, 1);
+    var r = rng(42), count = W < 420 ? 3 : 4, s = clamp(W / 600, 0.7, 1.12);
     for (var k = 0; k < count; k++) {
       var th = (k + r() * 0.6) / count * Math.PI * 2, rad = 0.35 + r() * 0.3;
       var p = { x: pond.cx + Math.cos(th) * pond.rx * rad, y: pond.cy + Math.sin(th) * pond.ry * rad };
