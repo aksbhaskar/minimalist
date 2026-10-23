@@ -32,6 +32,8 @@
   .gh { display: grid; grid-template-rows: repeat(7, 1fr); grid-auto-flow: column; gap: 2px; }
   .gh-count { margin-top: 8px; }
   .pond-wrap { margin-bottom: 44px; }
+  .exp + .exp { margin-top: 8px; }
+  .t { white-space: nowrap; }
   #pond { display: block; width: 100%; height: 330px; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-tap-highlight-color: transparent; }
   @media (max-width: 520px) { #pond { height: 270px; } }
   .pond-hint { color: var(--muted); font-size: 15px; margin-top: 6px; }
@@ -78,15 +80,13 @@
 
   <section>
     <h2>Experience</h2>
-    <p>
-      Number Theory Researcher, ISI Delhi (10K Stipend) (Apr – Jul 2026)<br>
-      Teaching Assistant, Ashoka University (Apr – Jun 2026)<br>
-      Junior Researcher, <a href="https://www.nyas.org/">New York Academy of Sciences</a> (Aug 2025 – Jul 2026)<br>
-      Policy Intern, Office of Mr. Rahul Pachori (Director at the Ministry of Education, Government of India) (Jun 2025)<br>
-      Research Scholar, <a href="https://www.lodhageniusprogramme.com/">Lodha Genius Programme</a> (May 2025 – Apr 2026)<br>
-      CFO, TaxCity (Acquired) (Jun 2024 – Jan 2026)<br>
-      Creator, FinKid (Raised $25K) (May 2023 – Present)
-    </p>
+    <p class="exp">Number Theory Researcher, ISI Delhi (10K Stipend) <span class="t">(Apr – Jul 2026)</span></p>
+    <p class="exp">Teaching Assistant, Ashoka University <span class="t">(Apr – Jun 2026)</span></p>
+    <p class="exp">Junior Researcher, <a href="https://www.nyas.org/">New York Academy of Sciences</a> <span class="t">(Aug 2025 – Jul 2026)</span></p>
+    <p class="exp">Policy Intern, Office of Mr. Rahul Pachori (Director at the Ministry of Education, Government of India) <span class="t">(Jun 2025)</span></p>
+    <p class="exp">Research Scholar, <a href="https://www.lodhageniusprogramme.com/">Lodha Genius Programme</a> <span class="t">(May 2025 – Apr 2026)</span></p>
+    <p class="exp">CFO, TaxCity (Acquired) <span class="t">(Jun 2024 – Jan 2026)</span></p>
+    <p class="exp">Creator, FinKid (Raised $25K) <span class="t">(May 2023 – Present)</span></p>
   </section>
 
   <section>
