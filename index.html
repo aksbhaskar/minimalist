@@ -31,7 +31,8 @@
   a:hover { text-decoration-color: var(--ink); }
   .gh { display: grid; grid-template-rows: repeat(7, 1fr); grid-auto-flow: column; gap: 2px; }
   .gh-count { margin-top: 8px; }
-  #pond { display: block; width: 100%; height: 195px; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  #pond { display: block; width: 100%; height: 330px; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-tap-highlight-color: transparent; }
+  @media (max-width: 520px) { #pond { height: 270px; } }
   .pond-hint { color: var(--muted); font-size: 15px; margin-top: 6px; }
   .gh i { display: block; aspect-ratio: 1; border-radius: 1px; background: color-mix(in srgb, var(--ink) 7%, var(--bg)); }
   .gh i.pad { visibility: hidden; }
@@ -118,146 +119,11 @@
   </section>
 
   <section class="pond-wrap">
-    <canvas id="pond" aria-label="A small ASCII koi pond. Tap to feed the koi."></canvas>
-    <p class="pond-hint">Tap the pond.</p>
+    <canvas id="pond" role="img" aria-label="An ASCII koi pond. Tap to feed the koi."></canvas>
+    <p class="pond-hint">Tap to feed the koi.</p>
   </section>
 </main>
-<script>
-  (function () {
-    var cv = document.getElementById("pond"), ctx = cv.getContext("2d");
-    var CW = 9, CH = 15, W = 0, H = 0, cols = 0, rows = 0, dpr = 1, running = false, last = 0, time = 0;
-    var koi = [], ripples = [], food = [], pads = [];
-    var BODY = ["@", "O", "O", "o", "o", "~"];
-    var COLORS = ["#e8743b", "#d9483b", "#e3a83a", "#ee8f5a", "#c95a3a"];
-    function dark() { return document.documentElement.getAttribute("data-theme") === "dark"; }
-    function rand(a, b) { return a + Math.random() * (b - a); }
-    function clampX(x) { return Math.min(Math.max(x, 12), W - 12); }
-    function clampY(y) { return Math.min(Math.max(y, 12), H - 12); }
-
-    function resize() {
-      var r = cv.getBoundingClientRect();
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      W = r.width; H = r.height; cols = Math.floor(W / CW); rows = Math.floor(H / CH);
-      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      pads = [{ c: Math.round(cols * 0.1), r: Math.round(rows * 0.7), w: 3, f: true },
-              { c: Math.round(cols * 0.88), r: Math.round(rows * 0.25), w: 2.5, f: true },
-              { c: Math.round(cols * 0.8), r: Math.round(rows * 0.8), w: 1.6 }];
-    }
-
-    function makeKoi(i) {
-      var x = rand(40, W - 40), y = rand(30, H - 30), segs = [];
-      for (var k = 0; k < BODY.length; k++) segs.push({ x: x - k * CW, y: y });
-      return { segs: segs, a: rand(0, 6.28), tx: x, ty: y, color: COLORS[i % COLORS.length], excited: 0, wait: 0 };
-    }
-    function wander(f) { f.tx = rand(30, W - 30); f.ty = rand(20, H - 20); f.wait = rand(2, 6); }
-
-    function call(x, y) {
-      ripples.push({ x: x, y: y, r: 0, life: 1 });
-      for (var i = 0; i < 5; i++) food.push({ x: clampX(x + rand(-14, 14)), y: clampY(y + rand(-8, 8)), life: rand(4, 7) });
-      koi.forEach(function (f, i) { var a = (i / koi.length) * 6.28; f.tx = x + Math.cos(a) * 26; f.ty = y + Math.sin(a) * 16; f.excited = 3; f.wait = 4; });
-      start();
-    }
-
-    function update(dt) {
-      time += dt;
-      koi.forEach(function (f) {
-        var h = f.segs[0], dx = f.tx - h.x, dy = f.ty - h.y, dist = Math.hypot(dx, dy);
-        f.excited = Math.max(0, f.excited - dt);
-        if (dist < 8) { f.wait -= dt; if (f.wait <= 0) wander(f); }
-        var want = Math.atan2(dy, dx), diff = Math.atan2(Math.sin(want - f.a), Math.cos(want - f.a));
-        var turn = (f.excited ? 4 : 1.6) * dt;
-        f.a += Math.max(-turn, Math.min(turn, diff)) + Math.sin(time * 2 + f.segs.length) * 0.01;
-        koi.forEach(function (o) {
-          if (o === f) return;
-          var ox = h.x - o.segs[0].x, oy = h.y - o.segs[0].y;
-          if (Math.hypot(ox, oy) < 22) f.a += Math.atan2(Math.sin(Math.atan2(oy, ox) - f.a), Math.cos(Math.atan2(oy, ox) - f.a)) * 0.04;
-        });
-        var speed = (f.excited ? 75 : 22) * (dist < 8 ? 0.3 : 1);
-        h.x = clampX(h.x + Math.cos(f.a) * speed * dt);
-        h.y = clampY(h.y + Math.sin(f.a) * speed * dt);
-        for (var k = 1; k < f.segs.length; k++) {
-          var p = f.segs[k - 1], q = f.segs[k], ex = q.x - p.x, ey = q.y - p.y, d = Math.hypot(ex, ey) || 1;
-          q.x = p.x + (ex / d) * CW; q.y = p.y + (ey / d) * CW;
-        }
-        food.forEach(function (m) { if (Math.hypot(m.x - h.x, m.y - h.y) < 8) m.life = 0; });
-      });
-      ripples.forEach(function (r) { r.r += 60 * dt; r.life -= dt * 0.7; });
-      ripples = ripples.filter(function (r) { return r.life > 0; });
-      food.forEach(function (m) { m.life -= dt; });
-      food = food.filter(function (m) { return m.life > 0; });
-    }
-
-    function put(ch, c, r, color, alpha) {
-      ctx.globalAlpha = alpha == null ? 1 : alpha;
-      ctx.fillStyle = color;
-      ctx.fillText(ch, c * CW + CW / 2, r * CH + CH / 2);
-    }
-
-    function draw() {
-      var dk = dark(), water = dk ? "#5f8fa3" : "#8fb4c4", pad = dk ? "#5f9a5b" : "#7fae79", flower = dk ? "#e08aa6" : "#e27a9b";
-      ctx.clearRect(0, 0, W, H);
-      ctx.font = "14px Newsreader, Georgia, serif";
-      for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) {
-        var n = Math.sin(c * 0.35 + time * 0.8) + Math.sin(r * 0.9 - time * 0.5 + c * 0.12);
-        if (n > 1.35) put("~", c, r, water, 0.55);
-        else if (n > 1.0) put("-", c, r, water, 0.3);
-        else if ((c * 7 + r * 13) % 23 === 0) put(".", c, r, water, 0.35);
-      }
-      ripples.forEach(function (rp) {
-        for (var a = 0; a < 6.28; a += 0.18) {
-          var c = Math.floor((rp.x + Math.cos(a) * rp.r) / CW), r = Math.floor((rp.y + Math.sin(a) * rp.r * 0.6) / CH);
-          if (c >= 0 && c < cols && r >= 0 && r < rows) put(rp.r < 30 ? "o" : ".", c, r, water, Math.max(0, rp.life));
-        }
-      });
-      pads.forEach(function (p) {
-        for (var r = -2; r <= 2; r++) for (var c = -4; c <= 4; c++) {
-          if ((c * c) / (p.w * p.w * 2.4) + (r * r) / (p.w * 0.55 * p.w * 0.55) <= 1 && !(c > 0 && r === 0)) put(":", p.c + c, p.r + r, pad, 0.9);
-        }
-        if (p.f) put("*", p.c - 1, p.r - 1, flower, 1);
-      });
-      food.forEach(function (m) { put("·", Math.floor(m.x / CW), Math.floor(m.y / CH), "#b98c4a", Math.min(1, m.life)); });
-      koi.forEach(function (f) {
-        var seen = {};
-        f.segs.forEach(function (sg, k) {
-          var c = Math.floor(sg.x / CW), r = Math.floor(sg.y / CH), key = c + "," + r;
-          if (seen[key]) return; seen[key] = 1;
-          put(BODY[k], c, r, f.color, 1);
-        });
-        var s1 = f.segs[1], nx = -Math.sin(f.a), ny = Math.cos(f.a);
-        put(",", Math.floor((s1.x + nx * 7) / CW), Math.floor((s1.y + ny * 7) / CH), f.color, 0.7);
-        put("'", Math.floor((s1.x - nx * 7) / CW), Math.floor((s1.y - ny * 7) / CH), f.color, 0.7);
-      });
-      ctx.globalAlpha = 1;
-    }
-
-    function frame(t) {
-      if (!running) return;
-      var dt = Math.min(0.05, (t - last) / 1000 || 0); last = t;
-      update(dt); draw();
-      requestAnimationFrame(frame);
-    }
-    function start() { if (!running) { running = true; last = performance.now(); requestAnimationFrame(frame); } }
-    function stop() { running = false; }
-
-    resize();
-    for (var i = 0; i < 5; i++) koi.push(makeKoi(i));
-    draw();
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
-
-    cv.addEventListener("pointerdown", function (e) {
-      var r = cv.getBoundingClientRect();
-      call(e.clientX - r.left, e.clientY - r.top);
-    });
-    window.addEventListener("resize", function () { resize(); draw(); });
-    document.getElementById("theme").addEventListener("click", function () { draw(); });
-
-    if ("IntersectionObserver" in window) {
-      new IntersectionObserver(function (es) { es[0].isIntersecting ? start() : stop(); }).observe(cv);
-    } else { start(); }
-  })();
-</script>
+<script src="pond.js"></script>
 <script>
   (function () {
     var grid = document.getElementById("gh"), count = document.getElementById("gh-count");
