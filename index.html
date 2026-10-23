@@ -6,17 +6,13 @@
 <title>Akshat Bhaskar</title>
 <meta name="description" content="Akshat Bhaskar — New Delhi.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fff'/><text x='8' y='24' font-family='Georgia,serif' font-size='24' fill='%23111'>a</text></svg>">
-<meta name="color-scheme" content="light dark">
 <script>try { var t = localStorage.getItem("theme"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400&display=swap" rel="stylesheet">
 <style>
   :root { --bg: #fff; --ink: #111; --muted: #888; --line: #ccc; }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) { --bg: #111; --ink: #e6e6e6; --muted: #7a7a7a; --line: #444; }
-  }
-  :root[data-theme="dark"] { --bg: #111; --ink: #e6e6e6; --muted: #7a7a7a; --line: #444; }
+  :root[data-theme="dark"] { --bg: #111; --ink: #e6e6e6; --muted: #7a7a7a; --line: #444; color-scheme: dark; }
   * { box-sizing: border-box; }
   body {
     margin: 0;
@@ -96,8 +92,7 @@
 <script>
   (function () {
     var root = document.documentElement, btn = document.getElementById("theme");
-    var mq = window.matchMedia("(prefers-color-scheme: dark)");
-    function isDark() { var t = root.getAttribute("data-theme"); return t ? t === "dark" : mq.matches; }
+    function isDark() { return root.getAttribute("data-theme") === "dark"; }
     function label() { btn.textContent = isDark() ? "Light" : "Dark"; }
     btn.addEventListener("click", function () {
       var next = isDark() ? "light" : "dark";
@@ -105,7 +100,6 @@
       try { localStorage.setItem("theme", next); } catch (e) {}
       label();
     });
-    mq.addEventListener && mq.addEventListener("change", label);
     label();
   })();
 </script>
