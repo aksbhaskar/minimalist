@@ -36,10 +36,9 @@
   .exp + .exp { margin-top: 8px; }
   .t { white-space: nowrap; }
   .d { color: var(--muted); }
-  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .cols > div + div { margin-top: 18px; }
   h3 { font-size: 18px; font-weight: 400; font-style: italic; color: var(--muted); margin: 0 0 4px; }
   .scholar { margin-top: 14px; }
-  @media (max-width: 560px) { .cols { grid-template-columns: 1fr; gap: 14px; } }
   #pond { display: block; width: 100%; height: 330px; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-tap-highlight-color: transparent; }
   @media (max-width: 520px) { #pond { height: 270px; } }
   .gh i { display: block; aspect-ratio: 1; border-radius: 1px; background: color-mix(in srgb, var(--ink) 7%, var(--bg)); }
