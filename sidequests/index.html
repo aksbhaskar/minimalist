@@ -28,14 +28,18 @@
   p { margin: 0; }
   a { color: inherit; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; text-decoration-thickness: 1px; }
   a:hover { text-decoration-color: var(--ink); }
-  .wall { width: min(960px, calc(100vw - 32px)); position: relative; left: 50%; transform: translateX(-50%); columns: 3; column-gap: 12px; }
+  .wall { width: min(960px, calc(100vw - 32px)); position: relative; left: 50%; transform: translateX(-50%); }
+  .grid { columns: 3; column-gap: 12px; }
+  .pair { display: flex; gap: 12px; margin-bottom: 12px; }
+  .pair .tile { flex: var(--r) 1 0; margin: 0; }
+  .tile.short img { aspect-ratio: 1 / 1; height: auto; object-fit: cover; object-position: var(--pos); }
   .tile { margin: 0 0 12px; break-inside: avoid; opacity: 0; transform: translateY(10px); transition: opacity .6s ease, transform .6s ease; }
   .tile.in { opacity: 1; transform: none; }
   .tile button { display: block; position: relative; width: 100%; padding: 0; border: 0; background: color-mix(in srgb, var(--ink) 6%, var(--bg)); border-radius: 10px; overflow: hidden; cursor: zoom-in; font: inherit; }
   .tile img { display: block; width: 100%; height: auto; transition: transform .5s ease, filter .5s ease; }
   .tile button:hover img, .tile button:focus-visible img { transform: scale(1.035); }
   .tile button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-  @media (max-width: 760px) { .wall { columns: 2; column-gap: 8px; } .tile { margin-bottom: 8px; } .tile button { border-radius: 8px; } }
+  @media (max-width: 760px) { .grid { columns: 2; column-gap: 8px; } .tile { margin-bottom: 8px; } .tile button { border-radius: 8px; } .pair { gap: 8px; margin-bottom: 8px; } }
   .lb { position: fixed; inset: 0; z-index: 10; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 12px; padding: 24px; background: rgba(10,10,10,.92); }
   .lb.open { display: flex; }
   .lb img { max-width: min(1200px, 100%); max-height: calc(100vh - 110px); border-radius: 8px; object-fit: contain; }
@@ -59,39 +63,47 @@
   <p class="site"><a href="../">Akshat Bhaskar</a></p>
 
   <div class="wall" id="wall">
-    <figure class="tile"><button type="button" data-i="0"><img src="images/1.webp" width="1600" height="1067" alt="Students felicitated by the President of India at Rashtrapati Bhavan" loading="eager"></button></figure>
-    <figure class="tile"><button type="button" data-i="1"><img src="images/2.webp" width="1170" height="878" alt="Snow-capped mountain behind pine trees" loading="eager"></button></figure>
-    <figure class="tile"><button type="button" data-i="2"><img src="images/3.webp" width="1200" height="684" alt="Discussion around a whiteboard of equations" loading="eager"></button></figure>
-    <figure class="tile"><button type="button" data-i="3"><img src="images/4.webp" width="1600" height="1200" alt="A pigeon taking off over a still lake" loading="eager"></button></figure>
-    <figure class="tile"><button type="button" data-i="4"><img src="images/5.webp" width="1280" height="568" alt="Presenting a proof of Euler's criterion on a whiteboard" loading="eager"></button></figure>
-    <figure class="tile"><button type="button" data-i="5"><img src="images/6.webp" width="1600" height="1067" alt="Yaks grazing below a mountain in the high Himalayas" loading="eager"></button></figure>
-    <figure class="tile"><button type="button" data-i="6"><img src="images/7.webp" width="303" height="220" alt="With Nobel laureate Sir Paul Nurse" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="7"><img src="images/8.webp" width="1600" height="1200" alt="Plaque marking Vinayak Damodar Savarkar's cell at the Cellular Jail" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="8"><img src="images/9.webp" width="1600" height="1200" alt="Paintings in the Cellular Jail gallery" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="9"><img src="images/10.webp" width="1080" height="1080" alt="Scuba diving underwater" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="10"><img src="images/11.webp" width="511" height="341" alt="Playing football" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="11"><img src="images/12.webp" width="780" height="1040" alt="Holding a trophy and medal after a football tournament" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="12"><img src="images/13.webp" width="1170" height="878" alt="A lecture slide on the range of sizes in biology" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="13"><img src="images/14.webp" width="631" height="870" alt="Cheering at a school event as a kid" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="14"><img src="images/15.webp" width="705" height="951" alt="Riding a camel in the desert" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="15"><img src="images/16.webp" width="1600" height="1200" alt="A lecture slide on the orbit of the star S2 around Sagittarius A*" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="16"><img src="images/17.webp" width="1600" height="1200" alt="With the team after winning the Masters' Union startup weekend" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="17"><img src="images/18.webp" width="1500" height="2000" alt="Recording with a microphone and laptop in a car" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="18"><img src="images/19.webp" width="1500" height="2000" alt="Holding a kitten" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="19"><img src="images/20.webp" width="1600" height="1200" alt="A selfie with friends at a cafe" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="20"><img src="images/21.webp" width="1280" height="720" alt="A selfie outside a coffeehouse at night" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="21"><img src="images/22.webp" width="1500" height="2000" alt="With a snowman in the mountains" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="22"><img src="images/23.webp" width="1170" height="878" alt="A lecture on Euler's work" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="23"><img src="images/24.webp" width="1170" height="878" alt="A demonstration at the Great Ideas Seminar" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="24"><img src="images/25.webp" width="658" height="878" alt="Trying out a VR headset" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="25"><img src="images/26.webp" width="1200" height="1600" alt="Riding a horse through a pine forest" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="26"><img src="images/27.webp" width="1600" height="1200" alt="Number theory worked out in marker on a desk" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="27"><img src="images/28.webp" width="540" height="720" alt="Dressed as a little chef holding a plate" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="28"><img src="images/29.webp" width="1551" height="878" alt="Orientation to the Lodha Genius Programme 2025" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="29"><img src="images/30.webp" width="1200" height="1600" alt="A plate of food" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="30"><img src="images/31.webp" width="1024" height="683" alt="Performing in a school play" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="31"><img src="images/32.webp" width="1024" height="683" alt="Playing guitar on stage" loading="lazy"></button></figure>
-    <figure class="tile"><button type="button" data-i="32"><img src="images/33.webp" width="738" height="1246" alt="Speaking as President of the Student Council" loading="lazy"></button></figure>
+    <figure class="tile feature"><button type="button"><img src="images/1.webp" width="1600" height="1067" alt="Students felicitated by the President of India at Rashtrapati Bhavan" loading="eager"></button></figure>
+    <div class="grid">
+      <figure class="tile"><button type="button"><img src="images/2.webp" width="1170" height="878" alt="Snow-capped mountain behind pine trees" loading="eager"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/4.webp" width="1600" height="1200" alt="A pigeon taking off over a still lake" loading="eager"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/6.webp" width="1600" height="1067" alt="Yaks grazing below a mountain in the high Himalayas" loading="eager"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/7.webp" width="303" height="220" alt="With Nobel laureate Sir Paul Nurse" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/8.webp" width="1600" height="1200" alt="Plaque marking Vinayak Damodar Savarkar's cell at the Cellular Jail" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/9.webp" width="1600" height="1200" alt="Paintings in the Cellular Jail gallery" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/10.webp" width="1080" height="1080" alt="Scuba diving underwater" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/11.webp" width="511" height="341" alt="Playing football" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/12.webp" width="780" height="1040" alt="Holding a trophy and medal after a football tournament" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/13.webp" width="1170" height="878" alt="A lecture slide on the range of sizes in biology" loading="lazy"></button></figure>
+    </div>
+    <div class="pair">
+      <figure class="tile" style="--r: 1.754"><button type="button"><img src="images/3.webp" width="1200" height="684" alt="Discussion around a whiteboard of equations" loading="eager"></button></figure>
+      <figure class="tile" style="--r: 1.499"><button type="button"><img src="images/32.webp" width="1024" height="683" alt="Playing guitar on stage" loading="lazy"></button></figure>
+    </div>
+    <div class="grid">
+      <figure class="tile short" style="--pos: 50% 10%"><button type="button"><img src="images/14.webp" width="631" height="870" alt="Cheering at a school event as a kid" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/15.webp" width="705" height="951" alt="Riding a camel in the desert" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/16.webp" width="1600" height="1200" alt="A lecture slide on the orbit of the star S2 around Sagittarius A*" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/17.webp" width="1600" height="1200" alt="With the team after winning the Masters' Union startup weekend" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/18.webp" width="1500" height="2000" alt="Recording with a microphone and laptop in a car" loading="lazy"></button></figure>
+      <figure class="tile short" style="--pos: 50% 40%"><button type="button"><img src="images/19.webp" width="1500" height="2000" alt="Holding a kitten" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/20.webp" width="1600" height="1200" alt="A selfie with friends at a cafe" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/21.webp" width="1280" height="720" alt="A selfie outside a coffeehouse at night" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/22.webp" width="1500" height="2000" alt="With a snowman in the mountains" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/23.webp" width="1170" height="878" alt="A lecture on Euler's work" loading="lazy"></button></figure>
+    </div>
+    <figure class="tile feature"><button type="button"><img src="images/5.webp" width="1280" height="568" alt="Presenting a proof of Euler's criterion on a whiteboard" loading="eager"></button></figure>
+    <div class="grid">
+      <figure class="tile"><button type="button"><img src="images/24.webp" width="1170" height="878" alt="A demonstration at the Great Ideas Seminar" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/25.webp" width="658" height="878" alt="Trying out a VR headset" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/26.webp" width="1200" height="1600" alt="Riding a horse through a pine forest" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/27.webp" width="1600" height="1200" alt="Number theory worked out in marker on a desk" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/28.webp" width="540" height="720" alt="Dressed as a little chef holding a plate" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/29.webp" width="1551" height="878" alt="Orientation to the Lodha Genius Programme 2025" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/30.webp" width="1200" height="1600" alt="A plate of food" loading="lazy"></button></figure>
+      <figure class="tile"><button type="button"><img src="images/31.webp" width="1024" height="683" alt="Performing in a school play" loading="lazy"></button></figure>
+      <figure class="tile short" style="--pos: 50% 8%"><button type="button"><img src="images/33.webp" width="738" height="1246" alt="Speaking as President of the Student Council" loading="lazy"></button></figure>
+    </div>
   </div>
 </main>
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
