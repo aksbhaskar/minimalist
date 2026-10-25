@@ -27,7 +27,7 @@
   a { color: inherit; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; text-decoration-thickness: 1px; }
   a:hover { text-decoration-color: var(--ink); }
   .wall { width: min(960px, calc(100vw - 32px)); position: relative; left: 50%; transform: translateX(-50%); }
-  .grid { columns: 3; column-gap: 12px; }
+  .grid { columns: 3; column-gap: 12px; margin-bottom: 12px; }
   .pair { display: flex; gap: 12px; margin-bottom: 12px; }
   .pair .tile { flex: var(--r) 1 0; margin: 0; }
   .tile.short img { aspect-ratio: 1 / 1; height: auto; object-fit: cover; object-position: var(--pos); }
@@ -37,7 +37,7 @@
   .tile img { display: block; width: 100%; height: auto; transition: transform .5s ease, filter .5s ease; }
   .tile button:hover img, .tile button:focus-visible img { transform: scale(1.035); }
   .tile button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-  @media (max-width: 760px) { .grid { columns: 2; column-gap: 8px; } .tile { margin-bottom: 8px; } .tile button { border-radius: 8px; } .pair { gap: 8px; margin-bottom: 8px; } }
+  @media (max-width: 760px) { .grid { columns: 2; column-gap: 8px; margin-bottom: 8px; } .tile { margin-bottom: 8px; } .tile button { border-radius: 8px; } .pair { gap: 8px; margin-bottom: 8px; } }
   .lb { position: fixed; inset: 0; z-index: 10; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 12px; padding: 24px; background: rgba(10,10,10,.92); }
   .lb.open { display: flex; }
   .lb img { max-width: min(1200px, 100%); max-height: calc(100vh - 110px); border-radius: 8px; object-fit: contain; }
