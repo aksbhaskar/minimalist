@@ -27,18 +27,6 @@
       stones: [["#787268", "#a29c91", "#c3bdb2"], ["#857563", "#ab9a84", "#c9b9a3"], ["#6f767c", "#979ea4", "#b8bec3"]], moss: "#7c9c63",
       under: "#7f9f7c", bubble: "#5f8ea5", fly: "#2f7f8f", flyWing: "#9db5c2",
       food: "#b4844a", petal: "#e9a3b8", weed: "#79a95a"
-    },
-    dark: {
-      water: "#4f7487", waterHi: "#a3cde0", waterLo: "#34505e", deep: "#2b4553", shadow: null, pebble: "#6f6656",
-      koi: {
-        white: ["#b0b4b7", "#dfe1e2", "#ffffff"], red: ["#b83d2a", "#ea5c43", "#ff876b"], orange: ["#c96a2a", "#f08d45", "#ffae6e"],
-        gold: ["#bf9326", "#ebbd48", "#ffd876"], black: ["#353a40", "#4d545b", "#666e76"], blue: ["#567a94", "#7c9fb9", "#a1bfd3"]
-      },
-      eye: "#0c0c0c",
-      pad: "#4d7f45", padRim: "#79b06b", padVein: "#66a05b", lotus: "#e88aa8", lotusTip: "#f7c6d6", lotusCore: "#f1c54f", lotusDeep: "#c96d8c",
-      stones: [["#4f4c47", "#6e6a62", "#918c83"], ["#57493c", "#7a6956", "#9c8a74"], ["#454b50", "#626a70", "#858d93"]], moss: "#5d7d4e",
-      under: "#557a55", bubble: "#9cc8db", fly: "#62c3d2", flyWing: "#c6d9e3",
-      food: "#d0a264", petal: "#f2b6c8", weed: "#68a050"
     }
   };
 
@@ -51,7 +39,7 @@
   var time = 0, last = 0, acc = 0, running = false, visible = false, nextDrip = 2;
   var pointer = { x: 0, y: 0, inside: false, wx: -99, wy: -99 };
 
-  function pal() { return document.documentElement.getAttribute("data-theme") === "dark" ? PALETTES.dark : PALETTES.light; }
+  function pal() { return PALETTES.light; }
   function rng(seed) {
     return function () {
       seed = seed + 0x6D2B79F5 | 0;
@@ -786,8 +774,6 @@
   cv.addEventListener("pointerleave", function () { pointer.inside = false; });
   window.addEventListener("resize", function () { layout(); render(); });
   document.addEventListener("visibilitychange", function () { if (document.hidden) stop(); else start(); });
-  var toggle = document.getElementById("theme");
-  if (toggle) toggle.addEventListener("click", function () { render(); });
 
   layout();
   render();
